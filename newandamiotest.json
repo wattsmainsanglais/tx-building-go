@@ -1,0 +1,170 @@
+{
+    "wallet": {
+        "id": "xpub14hxhrvddncp-pm",
+        "networkId": "preprod",
+        "signType": "mnemonic",
+        "rootKey": {
+            "pub": "xpub14hxhrvddncpxp7paqr93npmm7tewyhl4ydw6ekmmluthqcgzm8u35yw7n83dad9qea72n3slrjcnp55twsv9k4pp0825uw2dtgynlxqsrlnvx",
+            "prv": "46caccab21ca94edc9ada131ce44440772b21db69790d6975839033f32a237103f50985c189887a5aef5e4e552735cc9a25f1e979f1c0135aec8b450975876995c583b4ce61922fb4ff820df31ce0adb78c9e9275374ef8ff768521a55f486684f3f0cd9570ab544795e425e9bdc23769e17a60eb685e4f8256a83184a673e18b842a37a185d8b0da9c2fc524ffeee02945a7b30e93417b6e231ad774e6801f8ded4cc4511e88f65866a3326124ce023af8ad613941c51fb49d202e723acaf6ba18a4b29f04cb3b7a75a7a207b69f054ac541d7d4e7e882c8eb2e4cf5857f09853",
+            "v": "2"
+        },
+        "accountList": [
+            {
+                "id": "xpub1q5ma02945uc",
+                "pub": "xpub1q5ma02945ucf78qmrf3extxzfzmc839gkzd05l50qkeywr68f2e9ldtanrtj0ppr7url2vg7j0jh8jg62k6mh384w0l562d3ssr2ptss9f0nx",
+                "path": [
+                    1852,
+                    1815,
+                    0
+                ],
+                "signType": "mnemonic"
+            },
+            {
+                "id": "xpub1j3wu7afvrs2",
+                "pub": "xpub1j3wu7afvrs2a9fh8e7hpkwfj6ha7dxfp8pjrtd2vm3jxkjgem8amquvqhxvqktpneg42pwedzlwqevkhzfhutgperqdz5lv3vksyn9c0ufadf",
+                "path": [
+                    1854,
+                    1815,
+                    0
+                ],
+                "signType": "mnemonic"
+            }
+        ]
+    },
+    "settings": {
+        "id": "xpub14hxhrvddncp-pm",
+        "networkId": "preprod",
+        "name": "NewAndamioTest",
+        "groupName": null,
+        "description": null,
+        "plate": {
+            "image": "9372aad4bcfb3bc278e702aa05172a87f8c139cf4ec2d5a1a3ada4ad3426460ba3c2b4ae4c088d9988a18904df65d2d89e423fcc607baa69dc1feb32297d8904",
+            "data": null,
+            "checksum": "DDEH-0323"
+        },
+        "background": {
+            "name": null,
+            "policy": null,
+            "opacity": 100
+        },
+        "useBiometrics": false
+    },
+    "accountList": [
+        {
+            "account": {
+                "id": "xpub1q5ma02945uc",
+                "pub": "xpub1q5ma02945ucf78qmrf3extxzfzmc839gkzd05l50qkeywr68f2e9ldtanrtj0ppr7url2vg7j0jh8jg62k6mh384w0l562d3ssr2ptss9f0nx",
+                "path": [
+                    1852,
+                    1815,
+                    0
+                ],
+                "signType": "mnemonic"
+            },
+            "settings": {
+                "id": "xpub1q5ma02945uc",
+                "networkId": "preprod",
+                "name": null,
+                "sam": {
+                    "enabled": true,
+                    "addr": null
+                },
+                "aw": {
+                    "enabled": true
+                },
+                "aum": {
+                    "enabled": true
+                },
+                "sendAll": {
+                    "enabled": true
+                },
+                "manualSync": {
+                    "enabled": false
+                },
+                "historySync": {
+                    "enabled": false
+                },
+                "tf": {
+                    "enabled": true,
+                    "bundleSize": 20
+                },
+                "collateral": {
+                    "enabled": true,
+                    "eternl": true
+                },
+                "favorite": {
+                    "enabled": false
+                },
+                "preserveDatums": {
+                    "enabled": false
+                },
+                "catalyst_cip15": {
+                    "encryptedKey": null,
+                    "minVersion": null
+                },
+                "notifications": {
+                    "tx": true,
+                    "txMS": true
+                }
+            }
+        },
+        {
+            "account": {
+                "id": "xpub1j3wu7afvrs2",
+                "pub": "xpub1j3wu7afvrs2a9fh8e7hpkwfj6ha7dxfp8pjrtd2vm3jxkjgem8amquvqhxvqktpneg42pwedzlwqevkhzfhutgperqdz5lv3vksyn9c0ufadf",
+                "path": [
+                    1854,
+                    1815,
+                    0
+                ],
+                "signType": "mnemonic"
+            },
+            "settings": {
+                "id": "xpub1j3wu7afvrs2",
+                "networkId": "preprod",
+                "name": null,
+                "sam": {
+                    "enabled": true,
+                    "addr": null
+                },
+                "aw": {
+                    "enabled": true
+                },
+                "aum": {
+                    "enabled": true
+                },
+                "sendAll": {
+                    "enabled": true
+                },
+                "manualSync": {
+                    "enabled": false
+                },
+                "historySync": {
+                    "enabled": false
+                },
+                "tf": {
+                    "enabled": true,
+                    "bundleSize": 20
+                },
+                "collateral": {
+                    "enabled": true,
+                    "eternl": true
+                },
+                "favorite": {
+                    "enabled": false
+                },
+                "preserveDatums": {
+                    "enabled": false
+                },
+                "catalyst_cip15": {
+                    "encryptedKey": null,
+                    "minVersion": null
+                },
+                "notifications": {
+                    "tx": true,
+                    "txMS": true
+                }
+            }
+        }
+    ]
+}
