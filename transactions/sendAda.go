@@ -1,28 +1,36 @@
 package transactions
 
 import (
-	"bytes"
+	//"bytes"
 	"encoding/hex"
 	"fmt"
-	"io"
-	"net/http"
-	"strings"
+	//"io"
+	//"net/http"
+	//"strings"
 
 	"github.com/Salvionied/apollo"
+	"github.com/Salvionied/apollo/serialization/AssetName"
+	"github.com/Salvionied/apollo/serialization/Policy"
+	"github.com/Salvionied/apollo/txBuilding/Backend/BlockFrostChainContext"
 	"github.com/Salvionied/apollo/txBuilding/Backend/MaestroChainContext"
 )
 
 var (
 	recipient = "addr_test1qq2mes4h8xegru89g2a957at5s5kp75e3hs8kd2axulu6ehhrwvxll95kkqesq7advhq5pfjf5tqjz7gea45wjpjet6q0h7xam"
-	qty       = 100000 // 0.1 ADA in lovelace
+	qty       = 200000 // 0.1 ADA in lovelace
 )
 
 // SendAda builds and signs a simple ADA payment transaction
 func SendAda(mnemonic, maestroAPIKey, blockfrostProjectID string) (string, error) {
 	// Use Maestro for querying UTxOs
-	bfc, err := MaestroChainContext.NewMaestroChainContext(3, maestroAPIKey)
+	mfc, err := MaestroChainContext.NewMaestroChainContext(3, maestroAPIKey)
 	if err != nil {
 		return "", fmt.Errorf("failed to create Maestro chain context: %w", err)
+	}
+
+	bfc, err := BlockFrostChainContext.NewBlockfrostChainContext("https://cardano-preprod.blockfrost.io/api", 0, blockfrostProjectID)
+	if err != nil {
+		return "", fmt.Errorf("failed to create BlockFrost chain context: %w", err)
 	}
 
 	// Create empty backend and Apollo builder
@@ -45,17 +53,32 @@ func SendAda(mnemonic, maestroAPIKey, blockfrostProjectID string) (string, error
 	walletAddr := *apolloBE.GetWallet().GetAddress()
 	fmt.Printf("Wallet Address: %s\n", walletAddr.String())
 
-	utxos, err := bfc.Utxos(walletAddr)
+	utxos, err := mfc.Utxos(walletAddr)
 	if err != nil {
 		return "", fmt.Errorf("failed to get utxos: %w", err)
 	}
 
 	fmt.Printf("Found %d UTxOs\n", len(utxos))
 	totalAda := int64(0)
+	policyID := "5e74a87d8109db21fe3d407950c161cd2df7975f0868e10682a3dbfe"
+	assetNameHex := "7070626c323032342d73636166666f6c642d746f6b656e"
 	for i, utxo := range utxos {
 		amount := utxo.Output.GetAmount()
+		filteredCoin := amount.GetAssets().Filter(func(policy Policy.PolicyId, asset AssetName.AssetName, quantity int64) bool {
+			return policy.Value == policyID && asset.HexString() == assetNameHex
+		})
 		fmt.Printf("UTxO %d: %d lovelace\n", i, amount.GetCoin())
+		for policy, assets := range filteredCoin {
+			for assetName, quantity := range assets {
+				fmt.Printf("Policy: %s, Asset: %s, Quantity: %d\n", policy, assetName, quantity)
+			}
+		}
+
 		totalAda += int64(amount.GetCoin())
+		otherToken := amount.GetAssets()
+		if len(otherToken) > 0 {
+			fmt.Printf("Other tokens:  %v\n", otherToken)
+		}
 	}
 	fmt.Printf("Total ADA available: %d lovelace (%.2f ADA)\n\n", totalAda, float64(totalAda)/1000000.0)
 
@@ -80,24 +103,28 @@ func SendAda(mnemonic, maestroAPIKey, blockfrostProjectID string) (string, error
 		return "", fmt.Errorf("failed to get transaction bytes: %w", err)
 	}
 	txCbor := hex.EncodeToString(txBytes)
-	fmt.Printf("Transaction CBOR: %s\n\n", txCbor)
 
-	// Submit via HTTP directly to BlockFrost API
-	fmt.Println("Submitting transaction via HTTP to BlockFrost...")
-	txHash, err := submitTxBlockFrost(txCbor, blockfrostProjectID)
+	txHash, err := bfc.SubmitTx(*tx)
 	if err != nil {
 		return "", fmt.Errorf("failed to submit transaction: %w", err)
 	}
 
+	// Submit via HTTP directly to BlockFrost API
+	/*fmt.Println("Submitting transaction via HTTP to BlockFrost...")
+	txHash, err := submitTxBlockFrost(txCbor, blockfrostProjectID)
+	if err != nil {
+		return "", fmt.Errorf("failed to submit transaction: %w", err)
+	}
+	*/
 	fmt.Println("Transaction submitted successfully!")
 	fmt.Printf("Transaction ID: %s\n", txHash)
 
-	return txHash, nil
+	return txCbor, nil
 }
 
 // submitTxBlockFrost submits a transaction directly via BlockFrost HTTP API
 // This bypasses the buggy BlockFrost SDK and uses raw HTTP requests
-func submitTxBlockFrost(txCbor string, projectId string) (string, error) {
+/*func submitTxBlockFrost(txCbor string, projectId string) (string, error) {
 	// BlockFrost's transaction submission endpoint for Preprod
 	url := "https://cardano-preprod.blockfrost.io/api/v0/tx/submit"
 
@@ -150,4 +177,4 @@ func submitTxBlockFrost(txCbor string, projectId string) (string, error) {
 	txHash = strings.Trim(txHash, "\" \n\r")
 
 	return txHash, nil
-}
+}*/

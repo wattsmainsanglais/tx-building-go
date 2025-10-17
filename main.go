@@ -11,7 +11,6 @@ import (
 
 func main() {
 	fmt.Println("Cardano Transaction Builder using Apollo")
-	fmt.Println("==========================================\n")
 
 	// Load environment variables from .env file
 	if err := godotenv.Load(); err != nil {
