@@ -60,8 +60,11 @@ func SendAda(mnemonic, maestroAPIKey, blockfrostProjectID string) (string, error
 
 	fmt.Printf("Found %d UTxOs\n", len(utxos))
 	totalAda := int64(0)
+	totalUnits := int64(0)
 	policyID := "5e74a87d8109db21fe3d407950c161cd2df7975f0868e10682a3dbfe"
 	assetNameHex := "7070626c323032342d73636166666f6c642d746f6b656e"
+	assetNameBytes, _ := hex.DecodeString(assetNameHex)
+	assetName := string(assetNameBytes)
 	for i, utxo := range utxos {
 		amount := utxo.Output.GetAmount()
 		filteredCoin := amount.GetAssets().Filter(func(policy Policy.PolicyId, asset AssetName.AssetName, quantity int64) bool {
@@ -71,6 +74,9 @@ func SendAda(mnemonic, maestroAPIKey, blockfrostProjectID string) (string, error
 		for policy, assets := range filteredCoin {
 			for assetName, quantity := range assets {
 				fmt.Printf("Policy: %s, Asset: %s, Quantity: %d\n", policy, assetName, quantity)
+				if quantity > 0 {
+					totalUnits += 10
+				}
 			}
 		}
 
@@ -82,10 +88,16 @@ func SendAda(mnemonic, maestroAPIKey, blockfrostProjectID string) (string, error
 	}
 	fmt.Printf("Total ADA available: %d lovelace (%.2f ADA)\n\n", totalAda, float64(totalAda)/1000000.0)
 
+	unitsToSend := apollo.Unit{
+		PolicyId: policyID,
+		Name:     assetName,
+		Quantity: int(totalUnits),
+	}
+
 	// Build the transaction
 	apolloBE, err = apolloBE.
 		AddLoadedUTxOs(utxos...).
-		PayToAddressBech32(recipient, qty).
+		PayToAddressBech32(recipient, qty, unitsToSend).
 		Complete()
 	if err != nil {
 		return "", fmt.Errorf("failed to build transaction: %w", err)
@@ -97,16 +109,13 @@ func SendAda(mnemonic, maestroAPIKey, blockfrostProjectID string) (string, error
 	// Get the signed transaction
 	tx := apolloBE.GetTx()
 
-	// Get transaction bytes
-	txBytes, err := tx.Bytes()
-	if err != nil {
-		return "", fmt.Errorf("failed to get transaction bytes: %w", err)
-	}
-	txCbor := hex.EncodeToString(txBytes)
-
 	txHash, err := bfc.SubmitTx(*tx)
 	if err != nil {
 		return "", fmt.Errorf("failed to submit transaction: %w", err)
+	}
+
+	if txHash.Payload != nil {
+		fmt.Printf("Transaction complete")
 	}
 
 	// Submit via HTTP directly to BlockFrost API
@@ -116,10 +125,8 @@ func SendAda(mnemonic, maestroAPIKey, blockfrostProjectID string) (string, error
 		return "", fmt.Errorf("failed to submit transaction: %w", err)
 	}
 	*/
-	fmt.Println("Transaction submitted successfully!")
-	fmt.Printf("Transaction ID: %s\n", txHash)
 
-	return txCbor, nil
+	return hex.EncodeToString(txHash.Payload), nil
 }
 
 // submitTxBlockFrost submits a transaction directly via BlockFrost HTTP API
