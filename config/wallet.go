@@ -22,7 +22,7 @@ var (
 	myWallet = &Wallet{}
 )
 
-var mnemonic = "pigeon essay giggle armor divert edit soda asthma spider code satoshi fatal keen scissors certain outside error deposit turn glow dwarf crush kitten chimney"
+var mnemonic = "fake fake fake fake divert edit soda asthma spider code satoshi fatal keen scissors certain outside error deposit turn glow dwarf crush kitten chimney"
 var password = "" // Empty password - standard for most wallets
 
 // LoadWalletFromMnemonic initializes the wallet from a mnemonic phrase
